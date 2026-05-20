@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'style2.css' %}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="form-card">
+            <div class="hero-copy">
+                <p class="eyebrow">Task Manager</p>
+                <h1>Dashboard</h1>
+                <p class="subtitle">Add and organize your tasks.</p>
+            </div>
+
+            <form method="post" action="{% url 'dashboard' %}" class="form-grid">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="task">Task</label>
+                    <input type="text" id="task" name="task">
+                </div>
+
+                <div class="field field-checkbox">
+                    <input type="checkbox" id="status" name="status">
+                    <label for="status">Completed</label>
+                </div>
+                <div class="field">
+                    <label for="due_date">Due Date</label>
+                    <input type="date" id="due_date" name="due_date">
+                </div>
+
+                <div class="field">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description">
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn">Add</button>
+                    <br><br>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+                </div>
+            </form>
+            {% for i in c %}
+                <p>Task: {{ i.task }}</p>
+                <p>Due Date: {{ i.due_date }}</p>
+                <p>Description: {{ i.description }}</p>
+
+                <form method="post" action="{% url 'dashboard' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="todo_id" value="{{ i.id }}">
+                    <label for="status-{{ i.id }}">Status:</label>
+                    <input type="checkbox" id="status-{{ i.id }}" name="completed" {% if i.status %}checked{% endif %} onchange="this.form.submit()">
+                    {% if i.status %}
+                        Completed
+                    {% else %}
+                        Not Completed
+                    {% endif %}
+                </form>
+                <button type="submit" class="btn btn-danger"><a href="{% url 'delete_task' i.id %}">delete</a></button>
+                <p>________________________________________</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

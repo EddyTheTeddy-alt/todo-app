@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="form-card">
+            <div class="hero-copy">
+                <p class="eyebrow">Welcome Back</p>
+                <h1>Login</h1>
+                <p class="subtitle">Sign in to continue to your account.</p>
+            </div>
+            {% if error %}
+            <p class="form-error">{{ error }}</p>
+            {% endif %}
+            {% if success %}
+            <p class="form-link">{{ success }}</p>
+            {% endif %}
+
+            <form action="" method="post" class="form-grid">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Username">
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Password">
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn"><a href="{% url 'dashboard' %}">Login</a></button>
+                </div>
+            </form>
+
+            <p class="form-link">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+        </div>
+    </div>
+</body>
+</html>
