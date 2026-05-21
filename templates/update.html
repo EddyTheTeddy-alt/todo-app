@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Task</title>
+    <link rel="stylesheet" href="{% static 'styleafter making changes to file how to update this file again in.css' %}">
+</head>
+<body>
+    <h1>Update Task</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="task" value="{{ task.task }}">
+        <input type="date" name="due_date" value="{{ task.due_date }}">
+        <input type="text" name="description" value="{{ task.description }}">
+        <button type="submit">Update</button>
+    </form>
+    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+    <br>
+    <ul>
+        {% for task in tasks %}
+        <li>Task: {{ task.task }}</li>
+        <li>Due Date: {{ task.due_date }}</li>
+        <li>Description: {{ task.description }}</li>
+        <button type="button">Edit
+            <a href="{% url 'update' task.id %}">Edit</a>
+        </button>
+
+        {% empty %}
+        <li>No tasks found</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

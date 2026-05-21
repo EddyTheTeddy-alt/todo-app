@@ -46,3 +46,14 @@ def delete_task(request,id):
     task=Task.objects.get(id=id)
     task.delete()
     return redirect('dashboard')
+
+def edit_task(request,id):
+    task=Task.objects.get(id=id)
+    if request.method == 'POST':
+        task.task=request.POST.get('task')
+        task.due_date=request.POST.get('due_date')
+        task.description=request.POST.get('description')
+        task.status=request.POST.get('status') == 'on'
+        task.save()
+        return redirect('dashboard')
+    return render(request, 'update.html', {'task': task})

@@ -58,6 +58,7 @@
                         Not Completed
                     {% endif %}
                 </form>
+                <button type="submit" class="btn btn-warning"><a href="{% url 'edit_task' i.id %}">Edit</a></button>
                 <button type="submit" class="btn btn-danger"><a href="{% url 'delete_task' i.id %}">delete</a></button>
                 <p>________________________________________</p>
             {% endfor %}
