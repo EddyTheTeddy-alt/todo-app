@@ -5,64 +5,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{% static 'style2.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
 </head>
 <body>
-    <div class="page-shell">
-        <div class="form-card">
-            <div class="hero-copy">
-                <p class="eyebrow">Task Manager</p>
-                <h1>Dashboard</h1>
-                <p class="subtitle">Add and organize your tasks.</p>
+    <div class="container">
+
+        <h1>To Do List</h1>
+
+        <p class="dashboard-text">DASHBOARD</p>
+        <h2>Welcome {{ request.user.username }}</h2>
+        <p class="sub-text">Your To Do List</p>
+        {% if error %}
+        <p class="form-error">{{ error }}</p>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="post" action="{% url 'dashboard' %}" class="task-form">
+            {% csrf_token %}
+
+            <div class="field-block full">
+                <label for="task">Enter to do tasks:</label>
+                <input type="text" id="task" name="task" placeholder="Enter your task" required>
             </div>
 
-            <form method="post" action="{% url 'dashboard' %}" class="form-grid">
-                {% csrf_token %}
-                <div class="field">
-                    <label for="task">Task</label>
-                    <input type="text" id="task" name="task">
-                </div>
+            <div class="field-block">
+                <label for="due_date">Due Date</label>
+                <input type="date" id="due_date" name="due_date" required>
+            </div>
 
-                <div class="field field-checkbox">
-                    <input type="checkbox" id="status" name="status">
-                    <label for="status">Completed</label>
-                </div>
-                <div class="field">
-                    <label for="due_date">Due Date</label>
-                    <input type="date" id="due_date" name="due_date">
-                </div>
+            <div class="field-block">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" placeholder="Short description">
+            </div>
 
-                <div class="field">
-                    <label for="description">Description</label>
-                    <input type="text" id="description" name="description">
-                </div>
-                <div class="actions">
-                    <button type="submit" class="btn">Add</button>
-                    <br><br>
-                    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
-                </div>
-            </form>
-            {% for i in c %}
-                <p>Task: {{ i.task }}</p>
-                <p>Due Date: {{ i.due_date }}</p>
-                <p>Description: {{ i.description }}</p>
+            <label class="check-row">
+                <input type="checkbox" id="status" name="status">
+                <span>Mark as completed</span>
+            </label>
 
-                <form method="post" action="{% url 'dashboard' %}">
+            <button type="submit" class="add-btn">Add Task</button>
+        </form>
+
+        <!-- Tasks -->
+        <h3>Your Tasks</h3>
+
+        {% for i in c %}
+        <div class="task-box">
+            <div class="task-info">
+                <span class="task-name">{{ i.task }}</span>
+                <span class="task-status">{% if i.status %}Completed{% else %}Pending{% endif %}</span>
+                <p class="task-detail">
+                    Due Date:
+                    {% if i.due_date %}
+                        {{ i.due_date }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </p>
+                <p class="task-detail">
+                    {% if i.description %}
+                        {{ i.description }}
+                    {% else %}
+                        No description added
+                    {% endif %}
+                </p>
+                <form method="post" action="{% url 'dashboard' %}" class="status-form">
                     {% csrf_token %}
                     <input type="hidden" name="todo_id" value="{{ i.id }}">
-                    <label for="status-{{ i.id }}">Status:</label>
-                    <input type="checkbox" id="status-{{ i.id }}" name="completed" {% if i.status %}checked{% endif %} onchange="this.form.submit()">
-                    {% if i.status %}
-                        Completed
-                    {% else %}
-                        Not Completed
-                    {% endif %}
+                    <label class="check-row compact">
+                        <input type="checkbox" name="completed" {% if i.status %}checked{% endif %} onchange="this.form.submit()">
+                        <span>Completed</span>
+                    </label>
                 </form>
-                <button type="submit" class="btn btn-warning"><a href="{% url 'edit_task' i.id %}">Edit</a></button>
-                <button type="submit" class="btn btn-danger"><a href="{% url 'delete_task' i.id %}">delete</a></button>
-                <p>________________________________________</p>
-            {% endfor %}
+            </div>
+            <div class="task-actions">
+                <a href="{% url 'edit_task' i.id %}" class="small-btn update-btn">Update</a>
+                <a href="{% url 'delete_task' i.id %}" class="small-btn delete-btn">Delete</a>
+            </div>
         </div>
+        {% empty %}
+        <p class="empty">No tasks yet</p>
+        {% endfor %}
+
+        <!-- Logout -->
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+
     </div>
 </body>
 </html>

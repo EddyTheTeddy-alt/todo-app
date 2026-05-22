@@ -5,31 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Task</title>
-    <link rel="stylesheet" href="{% static 'styleafter making changes to file how to update this file again in.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
 </head>
 <body>
-    <h1>Update Task</h1>
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" name="task" value="{{ task.task }}">
-        <input type="date" name="due_date" value="{{ task.due_date }}">
-        <input type="text" name="description" value="{{ task.description }}">
-        <button type="submit">Update</button>
-    </form>
-    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
-    <br>
-    <ul>
-        {% for task in tasks %}
-        <li>Task: {{ task.task }}</li>
-        <li>Due Date: {{ task.due_date }}</li>
-        <li>Description: {{ task.description }}</li>
-        <button type="button">Edit
-            <a href="{% url 'update' task.id %}">Edit</a>
-        </button>
+    <div class="container">
+        <h1>Update Task</h1>
+        <p class="dashboard-text">EDIT TASK</p>
+        <h2>Update details</h2>
+        <p class="sub-text">Change the task, due date, description, or status.</p>
+        {% if error %}
+        <p class="form-error">{{ error }}</p>
+        {% endif %}
 
-        {% empty %}
-        <li>No tasks found</li>
-        {% endfor %}
-    </ul>
+        <form method="post" class="task-form update-form">
+            {% csrf_token %}
+
+            <div class="field-block full">
+                <label for="task">Task</label>
+                <input type="text" id="task" name="task" value="{{ task.task }}" required>
+            </div>
+
+            <div class="field-block">
+                <label for="due_date">Due Date</label>
+                <input type="date" id="due_date" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}" required>
+            </div>
+
+            <div class="field-block">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" value="{{ task.description }}">
+            </div>
+
+            <label class="check-row">
+                <input type="checkbox" id="status" name="status" {% if task.status %}checked{% endif %}>
+                <span>Mark as completed</span>
+            </label>
+
+            <button type="submit" class="add-btn">Save Changes</button>
+        </form>
+
+        <a href="{% url 'dashboard' %}" class="logout-btn">Back to Dashboard</a>
+    </div>
 </body>
 </html>
